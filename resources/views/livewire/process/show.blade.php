@@ -53,7 +53,7 @@
                     class="absolute right-0 mt-1 w-56 rounded-lg bg-[var(--ui-surface)] shadow-lg ring-1 ring-[var(--ui-border)] z-50 py-1 top-full"
                     style="display: none;"
                 >
-                    <a href="{{ route('process.processes.certificate-pdf', $process) }}"
+                    <a href="{{ route('process.processes.certificate.pdf', $process) }}"
                        class="flex items-center gap-2 px-3 py-2 text-sm text-[var(--ui-secondary)] hover:bg-[var(--ui-muted-5)] transition-colors">
                         @svg('heroicon-o-arrow-down-tray', 'w-4 h-4 text-[var(--ui-muted)]')
                         PDF herunterladen

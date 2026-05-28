@@ -1,21 +1,21 @@
 <?php
 
-namespace Platform\Organization\Livewire\Run;
+namespace Platform\Process\Livewire\Run;
 
 use Livewire\Attributes\Computed;
 use Livewire\Component;
-use Platform\Organization\Enums\RunStatus;
-use Platform\Organization\Enums\RunStepStatus;
-use Platform\Organization\Models\OrganizationProcess;
-use Platform\Organization\Models\OrganizationProcessRun;
-use Platform\Organization\Models\OrganizationProcessRunStep;
+use Platform\Process\Enums\RunStatus;
+use Platform\Process\Enums\RunStepStatus;
+use Platform\Process\Models\Process;
+use Platform\Process\Models\ProcessRun;
+use Platform\Process\Models\ProcessRunStep;
 
 class Show extends Component
 {
-    public OrganizationProcess $process;
-    public OrganizationProcessRun $run;
+    public Process$process;
+    public ProcessRun$run;
 
-    public function mount(OrganizationProcess $process, OrganizationProcessRun $run)
+    public function mount(Process$process, ProcessRun$run)
     {
         abort_if($run->process_id !== $process->id, 404);
 
@@ -72,7 +72,7 @@ class Show extends Component
 
     public function completeStep(int $runStepId, ?int $activeDuration = null, ?int $waitOverride = null): void
     {
-        $runStep = OrganizationProcessRunStep::with('run')->find($runStepId);
+        $runStep = ProcessRunStep::with('run')->find($runStepId);
         if (! $runStep || $runStep->run_id !== $this->run->id) return;
         if ($runStep->status !== RunStepStatus::PENDING) return;
 
@@ -106,7 +106,7 @@ class Show extends Component
 
     public function skipStep(int $runStepId): void
     {
-        $runStep = OrganizationProcessRunStep::with('run')->find($runStepId);
+        $runStep = ProcessRunStep::with('run')->find($runStepId);
         if (! $runStep || $runStep->run_id !== $this->run->id) return;
         if ($runStep->status !== RunStepStatus::PENDING) return;
 

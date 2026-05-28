@@ -1,32 +1,32 @@
 <?php
 
-namespace Platform\Organization\Livewire\Process;
+namespace Platform\Process\Livewire\Process;
 
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\Component;
-use Platform\Organization\Enums\AutomationLevel;
-use Platform\Organization\Enums\CorefitClassification;
-use Platform\Organization\Enums\ImprovementStatus;
-use Platform\Organization\Enums\ProcessCategory;
-use Platform\Organization\Enums\ProcessFrequency;
-use Platform\Organization\Enums\ProcessStatus;
-use Platform\Organization\Enums\SavingsType;
-use Platform\Organization\Enums\StepComplexity;
-use Platform\Organization\Models\OrganizationProcess;
-use Platform\Organization\Models\OrganizationProcessStep;
-use Platform\Organization\Models\OrganizationProcessFlow;
-use Platform\Organization\Models\OrganizationProcessTrigger;
-use Platform\Organization\Models\OrganizationProcessOutput;
-use Platform\Organization\Models\OrganizationProcessSnapshot;
-use Platform\Organization\Models\OrganizationProcessImprovement;
-use Platform\Organization\Models\OrganizationProcessRun;
+use Platform\Process\Enums\AutomationLevel;
+use Platform\Process\Enums\CorefitClassification;
+use Platform\Process\Enums\ImprovementStatus;
+use Platform\Process\Enums\ProcessCategory;
+use Platform\Process\Enums\ProcessFrequency;
+use Platform\Process\Enums\ProcessStatus;
+use Platform\Process\Enums\SavingsType;
+use Platform\Process\Enums\StepComplexity;
+use Platform\Process\Models\Process;
+use Platform\Process\Models\ProcessStep;
+use Platform\Process\Models\ProcessFlow;
+use Platform\Process\Models\ProcessTrigger;
+use Platform\Process\Models\ProcessOutput;
+use Platform\Process\Models\ProcessSnapshot;
+use Platform\Process\Models\ProcessImprovement;
+use Platform\Process\Models\ProcessRun;
 use Platform\Organization\Models\OrganizationEntity;
 use Platform\Organization\Models\OrganizationEntityType;
-use Platform\Organization\Enums\RunStatus;
-use Platform\Organization\Enums\RunStepStatus;
-use Platform\Organization\Services\ProcessCertificateService;
+use Platform\Process\Enums\RunStatus;
+use Platform\Process\Enums\RunStepStatus;
+use Platform\Process\Services\ProcessCertificateService;
 use Illuminate\Support\Str;
 use Livewire\WithFileUploads;
 
@@ -34,7 +34,7 @@ class Show extends Component
 {
     use WithFileUploads;
 
-    public OrganizationProcess $process;
+    public Process$process;
     public array $form = [];
     #[Url(as: 'tab')]
     public string $activeTab = 'details';
@@ -119,7 +119,7 @@ class Show extends Component
         'projected_external_cost_per_run' => '',
     ];
 
-    public function mount(OrganizationProcess $process)
+    public function mount(Process$process)
     {
         $this->process = $process->load(['ownerEntity', 'user']);
 
@@ -305,7 +305,7 @@ class Show extends Component
     #[Computed]
     public function availableProcesses()
     {
-        return OrganizationProcess::where('team_id', Auth::user()->currentTeam->id)
+        return Process::where('team_id', Auth::user()->currentTeam->id)
             ->where('id', '!=', $this->process->id)
             ->orderBy('name')
             ->get();
@@ -1373,7 +1373,7 @@ class Show extends Component
             ],
         ];
 
-        OrganizationProcessSnapshot::create([
+        ProcessSnapshot::create([
             'process_id'         => $process->id,
             'version'            => $nextVersion,
             'label'              => $this->snapshotLabel !== '' ? $this->snapshotLabel : null,
@@ -1389,7 +1389,7 @@ class Show extends Component
 
     public function deleteSnapshot(int $id): void
     {
-        OrganizationProcessSnapshot::where('id', $id)->where('process_id', $this->process->id)->delete();
+        ProcessSnapshot::where('id', $id)->where('process_id', $this->process->id)->delete();
         unset($this->processSnapshots);
         $this->dispatch('toast', message: 'Snapshot gelöscht');
     }
@@ -1516,7 +1516,7 @@ class Show extends Component
             return;
         }
 
-        $run = OrganizationProcessRun::create([
+        $run = ProcessRun::create([
             'process_id' => $this->process->id,
             'team_id'    => Auth::user()->currentTeam->id,
             'user_id'    => Auth::id(),
@@ -1575,7 +1575,7 @@ class Show extends Component
         foreach ($this->process->steps()->where('is_active', true)->get() as $step) {
             $stepData = $completedRuns->flatMap(fn ($r) => $r->runSteps)
                 ->where('process_step_id', $step->id)
-                ->where('status', \Platform\Organization\Enums\RunStepStatus::COMPLETED);
+                ->where('status', \Platform\Process\Enums\RunStepStatus::COMPLETED);
 
             if ($stepData->isEmpty()) {
                 continue;

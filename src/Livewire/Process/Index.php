@@ -1,12 +1,12 @@
 <?php
 
-namespace Platform\Organization\Livewire\Process;
+namespace Platform\Process\Livewire\Process;
 
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
-use Platform\Organization\Enums\ProcessCategory;
-use Platform\Organization\Models\OrganizationProcess;
+use Platform\Process\Enums\ProcessCategory;
+use Platform\Process\Models\Process;
 use Platform\Organization\Models\OrganizationEntity;
 use Platform\Organization\Models\OrganizationEntityType;
 
@@ -90,7 +90,7 @@ class Index extends Component
     #[Computed]
     public function processes()
     {
-        $q = OrganizationProcess::query()
+        $q = Process::query()
             ->withCount('steps')
             ->where('team_id', Auth::user()->currentTeam->id);
 
@@ -232,7 +232,7 @@ class Index extends Component
 
     public function edit(int $id): void
     {
-        $process = OrganizationProcess::where('team_id', Auth::user()->currentTeam->id)->find($id);
+        $process = Process::where('team_id', Auth::user()->currentTeam->id)->find($id);
         if (! $process) {
             return;
         }
@@ -270,13 +270,13 @@ class Index extends Component
         ];
 
         if ($this->editingId) {
-            $process = OrganizationProcess::where('team_id', Auth::user()->currentTeam->id)->find($this->editingId);
+            $process = Process::where('team_id', Auth::user()->currentTeam->id)->find($this->editingId);
             if ($process) {
                 $process->update($payload);
                 $this->dispatch('toast', message: 'Prozess aktualisiert');
             }
         } else {
-            OrganizationProcess::create(array_merge($payload, [
+            Process::create(array_merge($payload, [
                 'team_id' => Auth::user()->currentTeam->id,
                 'user_id' => Auth::id(),
             ]));
@@ -289,7 +289,7 @@ class Index extends Component
 
     public function delete(int $id): void
     {
-        $process = OrganizationProcess::where('team_id', Auth::user()->currentTeam->id)
+        $process = Process::where('team_id', Auth::user()->currentTeam->id)
             ->withCount('steps')
             ->find($id);
 

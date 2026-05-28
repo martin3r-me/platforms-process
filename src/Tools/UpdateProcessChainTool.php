@@ -65,7 +65,7 @@ class UpdateProcessChainTool implements ToolContract, ToolMetadataContract
                 return $found['error'];
             }
 
-            /** @var OrganizationProcessChain $chain */
+            /** @var ProcessChain $chain */
             $chain = $found['model'];
             if ((int) $chain->team_id !== $rootTeamId) {
                 return ToolResult::error('ACCESS_DENIED', 'Prozesskette gehört nicht zum Root/Elterteam.');

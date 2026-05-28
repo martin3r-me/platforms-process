@@ -64,7 +64,7 @@ class ListProcessRunsTool implements ToolContract, ToolMetadataContract
             $items = $q->with(['runSteps.processStep:id,name,position', 'user:id,name'])
                 ->orderByDesc('started_at')
                 ->get()
-                ->map(fn (OrganizationProcessRun $r) => [
+                ->map(fn (ProcessRun $r) => [
                     'id'             => $r->id,
                     'uuid'           => $r->uuid,
                     'status'         => $r->status?->value,

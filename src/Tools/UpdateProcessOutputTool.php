@@ -65,7 +65,7 @@ class UpdateProcessOutputTool implements ToolContract, ToolMetadataContract
                 return $found['error'];
             }
 
-            /** @var OrganizationProcessOutput $output */
+            /** @var ProcessOutput $output */
             $output = $found['model'];
             if ((int) $output->team_id !== $rootTeamId) {
                 return ToolResult::error('ACCESS_DENIED', 'Prozess-Output gehört nicht zum Root/Elterteam.');

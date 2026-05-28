@@ -62,7 +62,7 @@ class DeleteProcessStepTool implements ToolContract, ToolMetadataContract
                 return $found['error'];
             }
 
-            /** @var OrganizationProcessStep $step */
+            /** @var ProcessStep $step */
             $step = $found['model'];
             if ((int) $step->team_id !== $rootTeamId) {
                 return ToolResult::error('ACCESS_DENIED', 'Prozess-Schritt gehört nicht zum Root/Elterteam.');

@@ -61,7 +61,7 @@ class UpdateProcessStepEntityTool implements ToolContract, ToolMetadataContract
                 return $found['error'];
             }
 
-            /** @var OrganizationProcessStepEntity $stepEntity */
+            /** @var ProcessStepEntity $stepEntity */
             $stepEntity = $found['model'];
             if ((int) $stepEntity->team_id !== $rootTeamId) {
                 return ToolResult::error('ACCESS_DENIED', 'Step-Entity-Zuordnung gehört nicht zum Root/Elterteam.');

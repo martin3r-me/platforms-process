@@ -72,7 +72,7 @@ class ListProcessChainsTool implements ToolContract, ToolMetadataContract
             }
 
             $result = $this->applyStandardPaginationResult($q, $arguments);
-            $items = $result['data']->map(function (OrganizationProcessChain $c) use ($withMembers) {
+            $items = $result['data']->map(function (ProcessChain $c) use ($withMembers) {
                 $row = [
                     'id'               => $c->id,
                     'uuid'             => $c->uuid,

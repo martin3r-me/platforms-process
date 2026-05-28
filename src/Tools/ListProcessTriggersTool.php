@@ -74,7 +74,7 @@ class ListProcessTriggersTool implements ToolContract, ToolMetadataContract
             $this->applyStandardSort($q, $arguments, ['id', 'label', 'trigger_type', 'created_at'], 'id', 'asc');
 
             $result = $this->applyStandardPaginationResult($q, $arguments);
-            $items = $result['data']->map(fn (OrganizationProcessTrigger $t) => [
+            $items = $result['data']->map(fn (ProcessTrigger $t) => [
                 'id'                  => $t->id,
                 'uuid'                => $t->uuid,
                 'process_id'          => $t->process_id,

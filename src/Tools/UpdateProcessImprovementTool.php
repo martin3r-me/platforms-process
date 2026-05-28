@@ -74,7 +74,7 @@ class UpdateProcessImprovementTool implements ToolContract, ToolMetadataContract
                 return $found['error'];
             }
 
-            /** @var OrganizationProcessImprovement $improvement */
+            /** @var ProcessImprovement $improvement */
             $improvement = $found['model'];
             if ((int) $improvement->team_id !== $rootTeamId) {
                 return ToolResult::error('ACCESS_DENIED', 'Verbesserung gehört nicht zum Team.');

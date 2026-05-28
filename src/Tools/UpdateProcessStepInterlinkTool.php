@@ -60,7 +60,7 @@ class UpdateProcessStepInterlinkTool implements ToolContract, ToolMetadataContra
                 return $found['error'];
             }
 
-            /** @var OrganizationProcessStepInterlink $stepInterlink */
+            /** @var ProcessStepInterlink $stepInterlink */
             $stepInterlink = $found['model'];
             if ((int) $stepInterlink->team_id !== $rootTeamId) {
                 return ToolResult::error('ACCESS_DENIED', 'Step-Interlink-Zuordnung gehört nicht zum Root/Elterteam.');

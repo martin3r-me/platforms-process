@@ -82,7 +82,7 @@ class ListProcessStepsTool implements ToolContract, ToolMetadataContract
             $this->applyStandardSort($q, $arguments, ['position', 'name', 'id', 'created_at'], 'position', 'asc');
 
             $result = $this->applyStandardPaginationResult($q, $arguments);
-            $items = $result['data']->map(fn (OrganizationProcessStep $s) => [
+            $items = $result['data']->map(fn (ProcessStep $s) => [
                 'id'                      => $s->id,
                 'uuid'                    => $s->uuid,
                 'process_id'              => $s->process_id,

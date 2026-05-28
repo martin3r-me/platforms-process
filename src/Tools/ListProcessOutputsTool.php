@@ -74,7 +74,7 @@ class ListProcessOutputsTool implements ToolContract, ToolMetadataContract
             $this->applyStandardSort($q, $arguments, ['id', 'label', 'output_type', 'created_at'], 'id', 'asc');
 
             $result = $this->applyStandardPaginationResult($q, $arguments);
-            $items = $result['data']->map(fn (OrganizationProcessOutput $o) => [
+            $items = $result['data']->map(fn (ProcessOutput $o) => [
                 'id'                => $o->id,
                 'uuid'              => $o->uuid,
                 'process_id'        => $o->process_id,

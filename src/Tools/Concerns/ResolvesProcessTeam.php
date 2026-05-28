@@ -6,7 +6,7 @@ use Platform\Core\Contracts\ToolContext;
 use Platform\Core\Contracts\ToolResult;
 use Platform\Core\Models\Team;
 
-trait ResolvesOrganizationTeam
+trait ResolvesProcessTeam
 {
     /**
      * Resolves a team the user has access to, and derives its root/parent team.

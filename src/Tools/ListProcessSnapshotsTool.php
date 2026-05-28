@@ -56,7 +56,7 @@ class ListProcessSnapshotsTool implements ToolContract, ToolMetadataContract
             $snapshots = ProcessSnapshot::where('process_id', $process->id)
                 ->orderByDesc('version')
                 ->get()
-                ->map(fn (OrganizationProcessSnapshot $s) => [
+                ->map(fn (ProcessSnapshot $s) => [
                     'id'                 => $s->id,
                     'uuid'               => $s->uuid,
                     'version'            => $s->version,

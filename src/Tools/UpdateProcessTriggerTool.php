@@ -66,7 +66,7 @@ class UpdateProcessTriggerTool implements ToolContract, ToolMetadataContract
                 return $found['error'];
             }
 
-            /** @var OrganizationProcessTrigger $trigger */
+            /** @var ProcessTrigger $trigger */
             $trigger = $found['model'];
             if ((int) $trigger->team_id !== $rootTeamId) {
                 return ToolResult::error('ACCESS_DENIED', 'Prozess-Trigger gehört nicht zum Root/Elterteam.');

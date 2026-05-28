@@ -65,7 +65,7 @@ class ListProcessStepInterlinksTool implements ToolContract, ToolMetadataContrac
             $this->applyStandardSort($q, $arguments, ['id', 'role', 'created_at'], 'id', 'asc');
 
             $result = $this->applyStandardPaginationResult($q, $arguments);
-            $items = $result['data']->map(fn (OrganizationProcessStepInterlink $si) => [
+            $items = $result['data']->map(fn (ProcessStepInterlink $si) => [
                 'id'              => $si->id,
                 'uuid'            => $si->uuid,
                 'process_step_id' => $si->process_step_id,

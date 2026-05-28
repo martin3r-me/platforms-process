@@ -73,7 +73,7 @@ class ListProcessFlowsTool implements ToolContract, ToolMetadataContract
             $this->applyStandardSort($q, $arguments, ['id', 'priority', 'created_at'], 'priority', 'asc');
 
             $result = $this->applyStandardPaginationResult($q, $arguments);
-            $items = $result['data']->map(fn (OrganizationProcessFlow $f) => [
+            $items = $result['data']->map(fn (ProcessFlow $f) => [
                 'id'                   => $f->id,
                 'uuid'                 => $f->uuid,
                 'process_id'           => $f->process_id,

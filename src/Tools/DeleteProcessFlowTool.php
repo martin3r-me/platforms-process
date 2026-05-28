@@ -62,7 +62,7 @@ class DeleteProcessFlowTool implements ToolContract, ToolMetadataContract
                 return $found['error'];
             }
 
-            /** @var OrganizationProcessFlow $flow */
+            /** @var ProcessFlow $flow */
             $flow = $found['model'];
             if ((int) $flow->team_id !== $rootTeamId) {
                 return ToolResult::error('ACCESS_DENIED', 'Prozess-Flow gehört nicht zum Root/Elterteam.');

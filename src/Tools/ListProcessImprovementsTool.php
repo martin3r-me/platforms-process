@@ -71,7 +71,7 @@ class ListProcessImprovementsTool implements ToolContract, ToolMetadataContract
 
             $items = $q->orderByDesc('created_at')
                 ->get()
-                ->map(fn (OrganizationProcessImprovement $i) => [
+                ->map(fn (ProcessImprovement $i) => [
                     'id'                 => $i->id,
                     'uuid'               => $i->uuid,
                     'title'              => $i->title,

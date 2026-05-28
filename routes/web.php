@@ -6,6 +6,9 @@ use Platform\Process\Livewire\Process\Index as ProcessIndex;
 use Platform\Process\Livewire\Process\Show as ProcessShow;
 use Platform\Process\Livewire\Run\Show as RunShow;
 
+// Module root → redirect to process list
+Route::get('/', fn () => redirect()->route('process.processes.index'))->name('process.dashboard');
+
 // Processes
 Route::get('/processes', ProcessIndex::class)->name('process.processes.index');
 Route::get('/processes/status/{status}', ProcessIndex::class)->name('process.processes.index.status');

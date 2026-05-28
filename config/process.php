@@ -19,7 +19,7 @@ return [
             'process' => [
                 'title' => 'Prozesse',
                 'icon' => 'heroicon-o-arrow-path',
-                'route' => 'process.processes.index',
+                'route' => 'process.dashboard',
             ],
         ],
     ],

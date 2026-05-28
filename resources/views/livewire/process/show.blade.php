@@ -275,7 +275,7 @@
                     @forelse($this->activeRuns as $aRun)
                         @php
                             $aRunTotal = $aRun->runSteps->count();
-                            $aRunDone = $aRun->runSteps->whereIn('status', [\Platform\Organization\Enums\RunStepStatus::COMPLETED, \Platform\Organization\Enums\RunStepStatus::SKIPPED])->count();
+                            $aRunDone = $aRun->runSteps->whereIn('status', [\Platform\Process\Enums\RunStepStatus::COMPLETED, \Platform\Process\Enums\RunStepStatus::SKIPPED])->count();
                             $aRunPercent = $aRunTotal > 0 ? round(($aRunDone / $aRunTotal) * 100) : 0;
                         @endphp
                         <a
@@ -402,7 +402,7 @@
                             <x-ui-input-select
                                 name="process_category"
                                 label="Kategorie"
-                                :options="\Platform\Organization\Enums\ProcessCategory::cases()"
+                                :options="\Platform\Process\Enums\ProcessCategory::cases()"
                                 optionValue="value"
                                 optionLabel="label"
                                 wire:model.live="form.process_category"
@@ -1729,7 +1729,7 @@
                     @forelse($this->allRuns as $run)
                         @php
                             $runTotal = $run->runSteps->count();
-                            $runDone = $run->runSteps->whereIn('status', [\Platform\Organization\Enums\RunStepStatus::COMPLETED, \Platform\Organization\Enums\RunStepStatus::SKIPPED])->count();
+                            $runDone = $run->runSteps->whereIn('status', [\Platform\Process\Enums\RunStepStatus::COMPLETED, \Platform\Process\Enums\RunStepStatus::SKIPPED])->count();
                         @endphp
                         <x-ui-table-row compact="true" class="cursor-pointer hover:bg-[var(--ui-muted-5)]" onclick="window.Livewire.navigate('{{ route('process.processes.runs.show', [$process, $run]) }}')">
                             <x-ui-table-cell compact="true">

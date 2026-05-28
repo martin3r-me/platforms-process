@@ -1,20 +1,20 @@
 <?php
 
-namespace Platform\Organization\Tools;
+namespace Platform\Process\Tools;
 
 use Platform\Core\Contracts\ToolContract;
 use Platform\Core\Contracts\ToolContext;
 use Platform\Core\Contracts\ToolMetadataContract;
 use Platform\Core\Contracts\ToolResult;
-use Platform\Organization\Enums\ChainMemberRole;
-use Platform\Organization\Models\OrganizationProcess;
-use Platform\Organization\Models\OrganizationProcessChain;
-use Platform\Organization\Models\OrganizationProcessChainMember;
-use Platform\Organization\Tools\Concerns\ResolvesOrganizationTeam;
+use Platform\Process\Enums\ChainMemberRole;
+use Platform\Process\Models\Process;
+use Platform\Process\Models\ProcessChain;
+use Platform\Process\Models\ProcessChainMember;
+use Platform\Process\Tools\Concerns\ResolvesProcessTeam;
 
 class AddProcessToChainTool implements ToolContract, ToolMetadataContract
 {
-    use ResolvesOrganizationTeam;
+    use ResolvesProcessTeam;
 
     public function getName(): string
     {
@@ -59,17 +59,17 @@ class AddProcessToChainTool implements ToolContract, ToolMetadataContract
                 return ToolResult::error('VALIDATION_ERROR', 'process_chain_id und process_id sind erforderlich.');
             }
 
-            $chain = OrganizationProcessChain::find($chainId);
+            $chain = ProcessChain::find($chainId);
             if (! $chain || (int) $chain->team_id !== $rootTeamId) {
                 return ToolResult::error('NOT_FOUND', 'Prozesskette nicht gefunden (oder falsches Team).');
             }
-            $process = OrganizationProcess::find($processId);
+            $process = Process::find($processId);
             if (! $process || (int) $process->team_id !== $rootTeamId) {
                 return ToolResult::error('NOT_FOUND', 'Prozess nicht gefunden (oder falsches Team).');
             }
 
             // Uniqueness: chain_id + process_id
-            $existing = OrganizationProcessChainMember::where('chain_id', $chainId)
+            $existing = ProcessChainMember::where('chain_id', $chainId)
                 ->where('process_id', $processId)
                 ->first();
             if ($existing) {
@@ -83,11 +83,11 @@ class AddProcessToChainTool implements ToolContract, ToolMetadataContract
 
             $position = $arguments['position'] ?? null;
             if ($position === null || $position === '') {
-                $max = OrganizationProcessChainMember::where('chain_id', $chainId)->max('position') ?? 0;
+                $max = ProcessChainMember::where('chain_id', $chainId)->max('position') ?? 0;
                 $position = $max + 1;
             }
 
-            $member = OrganizationProcessChainMember::create([
+            $member = ProcessChainMember::create([
                 'team_id'     => $rootTeamId,
                 'user_id'     => $context->user?->id,
                 'chain_id'    => $chainId,

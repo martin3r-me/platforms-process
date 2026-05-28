@@ -1,18 +1,18 @@
 <?php
 
-namespace Platform\Organization\Tools;
+namespace Platform\Process\Tools;
 
 use Platform\Core\Contracts\ToolContract;
 use Platform\Core\Contracts\ToolContext;
 use Platform\Core\Contracts\ToolMetadataContract;
 use Platform\Core\Contracts\ToolResult;
-use Platform\Organization\Models\OrganizationProcess;
-use Platform\Organization\Models\OrganizationProcessImprovement;
-use Platform\Organization\Tools\Concerns\ResolvesOrganizationTeam;
+use Platform\Process\Models\Process;
+use Platform\Process\Models\ProcessImprovement;
+use Platform\Process\Tools\Concerns\ResolvesProcessTeam;
 
 class ListProcessImprovementsTool implements ToolContract, ToolMetadataContract
 {
-    use ResolvesOrganizationTeam;
+    use ResolvesProcessTeam;
 
     public function getName(): string
     {
@@ -48,7 +48,7 @@ class ListProcessImprovementsTool implements ToolContract, ToolMetadataContract
             }
             $rootTeamId = (int) $resolved['root_team_id'];
 
-            $process = OrganizationProcess::find($arguments['process_id'] ?? 0);
+            $process = Process::find($arguments['process_id'] ?? 0);
             if (! $process) {
                 return ToolResult::error('NOT_FOUND', 'Prozess nicht gefunden.');
             }
@@ -56,7 +56,7 @@ class ListProcessImprovementsTool implements ToolContract, ToolMetadataContract
                 return ToolResult::error('ACCESS_DENIED', 'Prozess gehört nicht zum Team.');
             }
 
-            $q = OrganizationProcessImprovement::where('process_id', $process->id)
+            $q = ProcessImprovement::where('process_id', $process->id)
                 ->where('team_id', $rootTeamId);
 
             if (! empty($arguments['status'])) {

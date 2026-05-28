@@ -1,20 +1,20 @@
 <?php
 
-namespace Platform\Organization\Tools;
+namespace Platform\Process\Tools;
 
 use Platform\Core\Contracts\ToolContract;
 use Platform\Core\Contracts\ToolContext;
 use Platform\Core\Contracts\ToolMetadataContract;
 use Platform\Core\Contracts\ToolResult;
 use Platform\Core\Tools\Concerns\HasStandardizedWriteOperations;
-use Platform\Organization\Enums\ProcessChainType;
-use Platform\Organization\Models\OrganizationProcessChain;
-use Platform\Organization\Tools\Concerns\ResolvesOrganizationTeam;
+use Platform\Process\Enums\ProcessChainType;
+use Platform\Process\Models\ProcessChain;
+use Platform\Process\Tools\Concerns\ResolvesProcessTeam;
 
 class UpdateProcessChainTool implements ToolContract, ToolMetadataContract
 {
     use HasStandardizedWriteOperations;
-    use ResolvesOrganizationTeam;
+    use ResolvesProcessTeam;
 
     public function getName(): string
     {
@@ -57,7 +57,7 @@ class UpdateProcessChainTool implements ToolContract, ToolMetadataContract
                 $arguments,
                 $context,
                 'process_chain_id',
-                OrganizationProcessChain::class,
+                ProcessChain::class,
                 'NOT_FOUND',
                 'Prozesskette nicht gefunden.'
             );
@@ -83,7 +83,7 @@ class UpdateProcessChainTool implements ToolContract, ToolMetadataContract
                 $val = (string) ($arguments['code'] ?? '');
                 $newCode = $val === '' ? null : $val;
                 if ($newCode !== null && $newCode !== $chain->code) {
-                    $exists = OrganizationProcessChain::where('team_id', $rootTeamId)
+                    $exists = ProcessChain::where('team_id', $rootTeamId)
                         ->where('code', $newCode)
                         ->where('id', '!=', $chain->id)
                         ->exists();

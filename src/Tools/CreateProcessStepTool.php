@@ -1,20 +1,20 @@
 <?php
 
-namespace Platform\Organization\Tools;
+namespace Platform\Process\Tools;
 
 use Platform\Core\Contracts\ToolContract;
 use Platform\Core\Contracts\ToolContext;
 use Platform\Core\Contracts\ToolMetadataContract;
 use Platform\Core\Contracts\ToolResult;
-use Platform\Organization\Enums\ProcessEventType;
-use Platform\Organization\Enums\ProcessGatewayType;
-use Platform\Organization\Enums\StepComplexity;
-use Platform\Organization\Models\OrganizationProcessStep;
-use Platform\Organization\Tools\Concerns\ResolvesOrganizationTeam;
+use Platform\Process\Enums\ProcessEventType;
+use Platform\Process\Enums\ProcessGatewayType;
+use Platform\Process\Enums\StepComplexity;
+use Platform\Process\Models\ProcessStep;
+use Platform\Process\Tools\Concerns\ResolvesProcessTeam;
 
 class CreateProcessStepTool implements ToolContract, ToolMetadataContract
 {
-    use ResolvesOrganizationTeam;
+    use ResolvesProcessTeam;
 
     public function getName(): string
     {
@@ -95,7 +95,7 @@ class CreateProcessStepTool implements ToolContract, ToolMetadataContract
                 return ToolResult::error('VALIDATION_ERROR', 'Ungültige complexity. Erlaubt: '.implode(', ', StepComplexity::values()));
             }
 
-            $step = OrganizationProcessStep::create([
+            $step = ProcessStep::create([
                 'team_id'                 => $rootTeamId,
                 'user_id'                 => $context->user?->id,
                 'process_id'              => $processId,

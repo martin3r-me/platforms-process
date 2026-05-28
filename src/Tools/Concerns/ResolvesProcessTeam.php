@@ -1,6 +1,6 @@
 <?php
 
-namespace Platform\Organization\Tools\Concerns;
+namespace Platform\Process\Tools\Concerns;
 
 use Platform\Core\Contracts\ToolContext;
 use Platform\Core\Contracts\ToolResult;

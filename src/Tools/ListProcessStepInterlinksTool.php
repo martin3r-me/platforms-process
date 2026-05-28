@@ -1,19 +1,19 @@
 <?php
 
-namespace Platform\Organization\Tools;
+namespace Platform\Process\Tools;
 
 use Platform\Core\Contracts\ToolContract;
 use Platform\Core\Contracts\ToolContext;
 use Platform\Core\Contracts\ToolMetadataContract;
 use Platform\Core\Contracts\ToolResult;
 use Platform\Core\Tools\Concerns\HasStandardGetOperations;
-use Platform\Organization\Models\OrganizationProcessStepInterlink;
-use Platform\Organization\Tools\Concerns\ResolvesOrganizationTeam;
+use Platform\Process\Models\ProcessStepInterlink;
+use Platform\Process\Tools\Concerns\ResolvesProcessTeam;
 
 class ListProcessStepInterlinksTool implements ToolContract, ToolMetadataContract
 {
     use HasStandardGetOperations;
-    use ResolvesOrganizationTeam;
+    use ResolvesProcessTeam;
 
     public function getName(): string
     {
@@ -49,7 +49,7 @@ class ListProcessStepInterlinksTool implements ToolContract, ToolMetadataContrac
             }
             $rootTeamId = (int) $resolved['root_team_id'];
 
-            $q = OrganizationProcessStepInterlink::query()->where('team_id', $rootTeamId);
+            $q = ProcessStepInterlink::query()->where('team_id', $rootTeamId);
 
             if (! empty($arguments['process_step_id'])) {
                 $q->where('process_step_id', (int) $arguments['process_step_id']);

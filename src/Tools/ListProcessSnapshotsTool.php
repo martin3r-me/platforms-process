@@ -1,18 +1,18 @@
 <?php
 
-namespace Platform\Organization\Tools;
+namespace Platform\Process\Tools;
 
 use Platform\Core\Contracts\ToolContract;
 use Platform\Core\Contracts\ToolContext;
 use Platform\Core\Contracts\ToolMetadataContract;
 use Platform\Core\Contracts\ToolResult;
-use Platform\Organization\Models\OrganizationProcess;
-use Platform\Organization\Models\OrganizationProcessSnapshot;
-use Platform\Organization\Tools\Concerns\ResolvesOrganizationTeam;
+use Platform\Process\Models\Process;
+use Platform\Process\Models\ProcessSnapshot;
+use Platform\Process\Tools\Concerns\ResolvesProcessTeam;
 
 class ListProcessSnapshotsTool implements ToolContract, ToolMetadataContract
 {
-    use ResolvesOrganizationTeam;
+    use ResolvesProcessTeam;
 
     public function getName(): string
     {
@@ -45,7 +45,7 @@ class ListProcessSnapshotsTool implements ToolContract, ToolMetadataContract
             }
             $rootTeamId = (int) $resolved['root_team_id'];
 
-            $process = OrganizationProcess::find($arguments['process_id'] ?? 0);
+            $process = Process::find($arguments['process_id'] ?? 0);
             if (! $process) {
                 return ToolResult::error('NOT_FOUND', 'Prozess nicht gefunden.');
             }
@@ -53,7 +53,7 @@ class ListProcessSnapshotsTool implements ToolContract, ToolMetadataContract
                 return ToolResult::error('ACCESS_DENIED', 'Prozess gehört nicht zum Team.');
             }
 
-            $snapshots = OrganizationProcessSnapshot::where('process_id', $process->id)
+            $snapshots = ProcessSnapshot::where('process_id', $process->id)
                 ->orderByDesc('version')
                 ->get()
                 ->map(fn (OrganizationProcessSnapshot $s) => [

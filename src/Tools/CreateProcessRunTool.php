@@ -1,18 +1,18 @@
 <?php
 
-namespace Platform\Organization\Tools;
+namespace Platform\Process\Tools;
 
 use Platform\Core\Contracts\ToolContract;
 use Platform\Core\Contracts\ToolContext;
 use Platform\Core\Contracts\ToolMetadataContract;
 use Platform\Core\Contracts\ToolResult;
-use Platform\Organization\Models\OrganizationProcess;
-use Platform\Organization\Models\OrganizationProcessRun;
-use Platform\Organization\Tools\Concerns\ResolvesOrganizationTeam;
+use Platform\Process\Models\Process;
+use Platform\Process\Models\ProcessRun;
+use Platform\Process\Tools\Concerns\ResolvesProcessTeam;
 
 class CreateProcessRunTool implements ToolContract, ToolMetadataContract
 {
-    use ResolvesOrganizationTeam;
+    use ResolvesProcessTeam;
 
     public function getName(): string
     {
@@ -46,7 +46,7 @@ class CreateProcessRunTool implements ToolContract, ToolMetadataContract
             }
             $rootTeamId = (int) $resolved['root_team_id'];
 
-            $process = OrganizationProcess::find($arguments['process_id'] ?? 0);
+            $process = Process::find($arguments['process_id'] ?? 0);
             if (! $process) {
                 return ToolResult::error('NOT_FOUND', 'Prozess nicht gefunden.');
             }
@@ -63,7 +63,7 @@ class CreateProcessRunTool implements ToolContract, ToolMetadataContract
                 return ToolResult::error('VALIDATION_ERROR', 'Prozess hat keine aktiven Steps.');
             }
 
-            $run = OrganizationProcessRun::create([
+            $run = ProcessRun::create([
                 'team_id'    => $rootTeamId,
                 'user_id'    => $context->user?->id,
                 'process_id' => $process->id,

@@ -1,19 +1,19 @@
 <?php
 
-namespace Platform\Organization\Tools;
+namespace Platform\Process\Tools;
 
 use Platform\Core\Contracts\ToolContract;
 use Platform\Core\Contracts\ToolContext;
 use Platform\Core\Contracts\ToolMetadataContract;
 use Platform\Core\Contracts\ToolResult;
-use Platform\Organization\Enums\RunStatus;
-use Platform\Organization\Enums\RunStepStatus;
-use Platform\Organization\Models\OrganizationProcessRunStep;
-use Platform\Organization\Tools\Concerns\ResolvesOrganizationTeam;
+use Platform\Process\Enums\RunStatus;
+use Platform\Process\Enums\RunStepStatus;
+use Platform\Process\Models\ProcessRunStep;
+use Platform\Process\Tools\Concerns\ResolvesProcessTeam;
 
 class CompleteProcessRunStepTool implements ToolContract, ToolMetadataContract
 {
-    use ResolvesOrganizationTeam;
+    use ResolvesProcessTeam;
 
     public function getName(): string
     {
@@ -50,7 +50,7 @@ class CompleteProcessRunStepTool implements ToolContract, ToolMetadataContract
             }
             $rootTeamId = (int) $resolved['root_team_id'];
 
-            $runStep = OrganizationProcessRunStep::with('run')->find($arguments['run_step_id'] ?? 0);
+            $runStep = ProcessRunStep::with('run')->find($arguments['run_step_id'] ?? 0);
             if (! $runStep) {
                 return ToolResult::error('NOT_FOUND', 'Run-Step nicht gefunden.');
             }

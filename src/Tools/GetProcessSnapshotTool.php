@@ -1,17 +1,17 @@
 <?php
 
-namespace Platform\Organization\Tools;
+namespace Platform\Process\Tools;
 
 use Platform\Core\Contracts\ToolContract;
 use Platform\Core\Contracts\ToolContext;
 use Platform\Core\Contracts\ToolMetadataContract;
 use Platform\Core\Contracts\ToolResult;
-use Platform\Organization\Models\OrganizationProcessSnapshot;
-use Platform\Organization\Tools\Concerns\ResolvesOrganizationTeam;
+use Platform\Process\Models\ProcessSnapshot;
+use Platform\Process\Tools\Concerns\ResolvesProcessTeam;
 
 class GetProcessSnapshotTool implements ToolContract, ToolMetadataContract
 {
-    use ResolvesOrganizationTeam;
+    use ResolvesProcessTeam;
 
     public function getName(): string
     {
@@ -44,7 +44,7 @@ class GetProcessSnapshotTool implements ToolContract, ToolMetadataContract
             }
             $rootTeamId = (int) $resolved['root_team_id'];
 
-            $snapshot = OrganizationProcessSnapshot::with('process')->find($arguments['snapshot_id'] ?? 0);
+            $snapshot = ProcessSnapshot::with('process')->find($arguments['snapshot_id'] ?? 0);
             if (! $snapshot) {
                 return ToolResult::error('NOT_FOUND', 'Snapshot nicht gefunden.');
             }

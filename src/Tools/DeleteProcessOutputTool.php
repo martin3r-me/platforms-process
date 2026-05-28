@@ -1,19 +1,19 @@
 <?php
 
-namespace Platform\Organization\Tools;
+namespace Platform\Process\Tools;
 
 use Platform\Core\Contracts\ToolContract;
 use Platform\Core\Contracts\ToolContext;
 use Platform\Core\Contracts\ToolMetadataContract;
 use Platform\Core\Contracts\ToolResult;
 use Platform\Core\Tools\Concerns\HasStandardizedWriteOperations;
-use Platform\Organization\Models\OrganizationProcessOutput;
-use Platform\Organization\Tools\Concerns\ResolvesOrganizationTeam;
+use Platform\Process\Models\ProcessOutput;
+use Platform\Process\Tools\Concerns\ResolvesProcessTeam;
 
 class DeleteProcessOutputTool implements ToolContract, ToolMetadataContract
 {
     use HasStandardizedWriteOperations;
-    use ResolvesOrganizationTeam;
+    use ResolvesProcessTeam;
 
     public function getName(): string
     {
@@ -54,7 +54,7 @@ class DeleteProcessOutputTool implements ToolContract, ToolMetadataContract
                 $arguments,
                 $context,
                 'process_output_id',
-                OrganizationProcessOutput::class,
+                ProcessOutput::class,
                 'NOT_FOUND',
                 'Prozess-Output nicht gefunden.'
             );

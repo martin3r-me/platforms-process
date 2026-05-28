@@ -1,17 +1,17 @@
 <?php
 
-namespace Platform\Organization\Tools;
+namespace Platform\Process\Tools;
 
 use Platform\Core\Contracts\ToolContract;
 use Platform\Core\Contracts\ToolContext;
 use Platform\Core\Contracts\ToolMetadataContract;
 use Platform\Core\Contracts\ToolResult;
-use Platform\Organization\Models\OrganizationProcessSnapshot;
-use Platform\Organization\Tools\Concerns\ResolvesOrganizationTeam;
+use Platform\Process\Models\ProcessSnapshot;
+use Platform\Process\Tools\Concerns\ResolvesProcessTeam;
 
 class CompareProcessSnapshotsTool implements ToolContract, ToolMetadataContract
 {
-    use ResolvesOrganizationTeam;
+    use ResolvesProcessTeam;
 
     public function getName(): string
     {
@@ -45,8 +45,8 @@ class CompareProcessSnapshotsTool implements ToolContract, ToolMetadataContract
             }
             $rootTeamId = (int) $resolved['root_team_id'];
 
-            $a = OrganizationProcessSnapshot::with('process')->find($arguments['snapshot_a_id'] ?? 0);
-            $b = OrganizationProcessSnapshot::with('process')->find($arguments['snapshot_b_id'] ?? 0);
+            $a = ProcessSnapshot::with('process')->find($arguments['snapshot_a_id'] ?? 0);
+            $b = ProcessSnapshot::with('process')->find($arguments['snapshot_b_id'] ?? 0);
 
             if (! $a || ! $b) {
                 return ToolResult::error('NOT_FOUND', 'Einer oder beide Snapshots nicht gefunden.');

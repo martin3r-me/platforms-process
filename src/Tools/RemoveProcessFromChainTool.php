@@ -1,17 +1,17 @@
 <?php
 
-namespace Platform\Organization\Tools;
+namespace Platform\Process\Tools;
 
 use Platform\Core\Contracts\ToolContract;
 use Platform\Core\Contracts\ToolContext;
 use Platform\Core\Contracts\ToolMetadataContract;
 use Platform\Core\Contracts\ToolResult;
-use Platform\Organization\Models\OrganizationProcessChainMember;
-use Platform\Organization\Tools\Concerns\ResolvesOrganizationTeam;
+use Platform\Process\Models\ProcessChainMember;
+use Platform\Process\Tools\Concerns\ResolvesProcessTeam;
 
 class RemoveProcessFromChainTool implements ToolContract, ToolMetadataContract
 {
-    use ResolvesOrganizationTeam;
+    use ResolvesProcessTeam;
 
     public function getName(): string
     {
@@ -51,9 +51,9 @@ class RemoveProcessFromChainTool implements ToolContract, ToolMetadataContract
 
             $member = null;
             if ($memberId > 0) {
-                $member = OrganizationProcessChainMember::find($memberId);
+                $member = ProcessChainMember::find($memberId);
             } elseif ($chainId > 0 && $processId > 0) {
-                $member = OrganizationProcessChainMember::where('chain_id', $chainId)
+                $member = ProcessChainMember::where('chain_id', $chainId)
                     ->where('process_id', $processId)
                     ->first();
             } else {

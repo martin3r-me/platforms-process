@@ -1,18 +1,18 @@
 <?php
 
-namespace Platform\Organization\Tools;
+namespace Platform\Process\Tools;
 
 use Platform\Core\Contracts\ToolContract;
 use Platform\Core\Contracts\ToolContext;
 use Platform\Core\Contracts\ToolMetadataContract;
 use Platform\Core\Contracts\ToolResult;
-use Platform\Organization\Enums\ProcessChainType;
-use Platform\Organization\Models\OrganizationProcessChain;
-use Platform\Organization\Tools\Concerns\ResolvesOrganizationTeam;
+use Platform\Process\Enums\ProcessChainType;
+use Platform\Process\Models\ProcessChain;
+use Platform\Process\Tools\Concerns\ResolvesProcessTeam;
 
 class CreateProcessChainTool implements ToolContract, ToolMetadataContract
 {
-    use ResolvesOrganizationTeam;
+    use ResolvesProcessTeam;
 
     public function getName(): string
     {
@@ -63,13 +63,13 @@ class CreateProcessChainTool implements ToolContract, ToolMetadataContract
 
             $code = ($arguments['code'] ?? null) ?: null;
             if ($code !== null) {
-                $exists = OrganizationProcessChain::where('team_id', $rootTeamId)->where('code', $code)->exists();
+                $exists = ProcessChain::where('team_id', $rootTeamId)->where('code', $code)->exists();
                 if ($exists) {
                     return ToolResult::error('VALIDATION_ERROR', 'Eine Kette mit diesem code existiert bereits im Team.');
                 }
             }
 
-            $chain = OrganizationProcessChain::create([
+            $chain = ProcessChain::create([
                 'team_id'          => $rootTeamId,
                 'user_id'          => $context->user?->id,
                 'name'             => $name,

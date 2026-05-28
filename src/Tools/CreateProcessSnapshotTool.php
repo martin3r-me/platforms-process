@@ -1,19 +1,19 @@
 <?php
 
-namespace Platform\Organization\Tools;
+namespace Platform\Process\Tools;
 
 use Platform\Core\Contracts\ToolContract;
 use Platform\Core\Contracts\ToolContext;
 use Platform\Core\Contracts\ToolMetadataContract;
 use Platform\Core\Contracts\ToolResult;
-use Platform\Organization\Enums\AutomationLevel;
-use Platform\Organization\Models\OrganizationProcess;
-use Platform\Organization\Models\OrganizationProcessSnapshot;
-use Platform\Organization\Tools\Concerns\ResolvesOrganizationTeam;
+use Platform\Process\Enums\AutomationLevel;
+use Platform\Process\Models\Process;
+use Platform\Process\Models\ProcessSnapshot;
+use Platform\Process\Tools\Concerns\ResolvesProcessTeam;
 
 class CreateProcessSnapshotTool implements ToolContract, ToolMetadataContract
 {
-    use ResolvesOrganizationTeam;
+    use ResolvesProcessTeam;
 
     public function getName(): string
     {
@@ -47,7 +47,7 @@ class CreateProcessSnapshotTool implements ToolContract, ToolMetadataContract
             }
             $rootTeamId = (int) $resolved['root_team_id'];
 
-            $process = OrganizationProcess::with(['steps', 'flows', 'triggers', 'outputs', 'chainMemberships'])->find($arguments['process_id'] ?? 0);
+            $process = Process::with(['steps', 'flows', 'triggers', 'outputs', 'chainMemberships'])->find($arguments['process_id'] ?? 0);
             if (! $process) {
                 return ToolResult::error('NOT_FOUND', 'Prozess nicht gefunden.');
             }
@@ -56,7 +56,7 @@ class CreateProcessSnapshotTool implements ToolContract, ToolMetadataContract
             }
 
             // Next version
-            $maxVersion = OrganizationProcessSnapshot::where('process_id', $process->id)->max('version') ?? 0;
+            $maxVersion = ProcessSnapshot::where('process_id', $process->id)->max('version') ?? 0;
             $nextVersion = $maxVersion + 1;
 
             // Collect snapshot data
@@ -163,7 +163,7 @@ class CreateProcessSnapshotTool implements ToolContract, ToolMetadataContract
                 ],
             ];
 
-            $snapshot = OrganizationProcessSnapshot::create([
+            $snapshot = ProcessSnapshot::create([
                 'process_id'         => $process->id,
                 'version'            => $nextVersion,
                 'label'              => ($arguments['label'] ?? null) ?: null,

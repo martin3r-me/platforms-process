@@ -1,19 +1,19 @@
 <?php
 
-namespace Platform\Organization\Tools;
+namespace Platform\Process\Tools;
 
 use Platform\Core\Contracts\ToolContract;
 use Platform\Core\Contracts\ToolContext;
 use Platform\Core\Contracts\ToolMetadataContract;
 use Platform\Core\Contracts\ToolResult;
 use Platform\Core\Tools\Concerns\HasStandardGetOperations;
-use Platform\Organization\Models\OrganizationProcessChain;
-use Platform\Organization\Tools\Concerns\ResolvesOrganizationTeam;
+use Platform\Process\Models\ProcessChain;
+use Platform\Process\Tools\Concerns\ResolvesProcessTeam;
 
 class ListProcessChainsTool implements ToolContract, ToolMetadataContract
 {
     use HasStandardGetOperations;
-    use ResolvesOrganizationTeam;
+    use ResolvesProcessTeam;
 
     public function getName(): string
     {
@@ -50,7 +50,7 @@ class ListProcessChainsTool implements ToolContract, ToolMetadataContract
             }
             $rootTeamId = (int) $resolved['root_team_id'];
 
-            $q = OrganizationProcessChain::query()->where('team_id', $rootTeamId);
+            $q = ProcessChain::query()->where('team_id', $rootTeamId);
 
             if (! empty($arguments['chain_type'])) {
                 $q->where('chain_type', (string) $arguments['chain_type']);

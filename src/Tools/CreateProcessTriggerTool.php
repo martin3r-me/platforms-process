@@ -1,17 +1,17 @@
 <?php
 
-namespace Platform\Organization\Tools;
+namespace Platform\Process\Tools;
 
 use Platform\Core\Contracts\ToolContract;
 use Platform\Core\Contracts\ToolContext;
 use Platform\Core\Contracts\ToolMetadataContract;
 use Platform\Core\Contracts\ToolResult;
-use Platform\Organization\Models\OrganizationProcessTrigger;
-use Platform\Organization\Tools\Concerns\ResolvesOrganizationTeam;
+use Platform\Process\Models\ProcessTrigger;
+use Platform\Process\Tools\Concerns\ResolvesProcessTeam;
 
 class CreateProcessTriggerTool implements ToolContract, ToolMetadataContract
 {
-    use ResolvesOrganizationTeam;
+    use ResolvesProcessTeam;
 
     public function getName(): string
     {
@@ -67,7 +67,7 @@ class CreateProcessTriggerTool implements ToolContract, ToolMetadataContract
                 return ToolResult::error('VALIDATION_ERROR', 'trigger_type ist erforderlich.');
             }
 
-            $trigger = OrganizationProcessTrigger::create([
+            $trigger = ProcessTrigger::create([
                 'team_id'             => $rootTeamId,
                 'user_id'             => $context->user?->id,
                 'process_id'          => $processId,

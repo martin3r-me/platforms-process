@@ -1,17 +1,17 @@
 <?php
 
-namespace Platform\Organization\Tools;
+namespace Platform\Process\Tools;
 
 use Platform\Core\Contracts\ToolContract;
 use Platform\Core\Contracts\ToolContext;
 use Platform\Core\Contracts\ToolMetadataContract;
 use Platform\Core\Contracts\ToolResult;
-use Platform\Organization\Models\OrganizationProcessOutput;
-use Platform\Organization\Tools\Concerns\ResolvesOrganizationTeam;
+use Platform\Process\Models\ProcessOutput;
+use Platform\Process\Tools\Concerns\ResolvesProcessTeam;
 
 class CreateProcessOutputTool implements ToolContract, ToolMetadataContract
 {
-    use ResolvesOrganizationTeam;
+    use ResolvesProcessTeam;
 
     public function getName(): string
     {
@@ -66,7 +66,7 @@ class CreateProcessOutputTool implements ToolContract, ToolMetadataContract
                 return ToolResult::error('VALIDATION_ERROR', 'output_type ist erforderlich.');
             }
 
-            $output = OrganizationProcessOutput::create([
+            $output = ProcessOutput::create([
                 'team_id'           => $rootTeamId,
                 'user_id'           => $context->user?->id,
                 'process_id'        => $processId,

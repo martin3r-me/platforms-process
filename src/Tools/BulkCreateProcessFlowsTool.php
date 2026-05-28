@@ -1,17 +1,17 @@
 <?php
 
-namespace Platform\Organization\Tools;
+namespace Platform\Process\Tools;
 
 use Platform\Core\Contracts\ToolContract;
 use Platform\Core\Contracts\ToolContext;
 use Platform\Core\Contracts\ToolMetadataContract;
 use Platform\Core\Contracts\ToolResult;
-use Platform\Organization\Models\OrganizationProcessFlow;
-use Platform\Organization\Tools\Concerns\ResolvesOrganizationTeam;
+use Platform\Process\Models\ProcessFlow;
+use Platform\Process\Tools\Concerns\ResolvesProcessTeam;
 
 class BulkCreateProcessFlowsTool implements ToolContract, ToolMetadataContract
 {
-    use ResolvesOrganizationTeam;
+    use ResolvesProcessTeam;
 
     public function getName(): string
     {
@@ -82,7 +82,7 @@ class BulkCreateProcessFlowsTool implements ToolContract, ToolMetadataContract
                     continue;
                 }
 
-                $flow = OrganizationProcessFlow::create([
+                $flow = ProcessFlow::create([
                     'team_id'              => $rootTeamId,
                     'user_id'              => $context->user?->id,
                     'process_id'           => $processId,

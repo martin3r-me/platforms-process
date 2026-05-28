@@ -1,0 +1,31 @@
+{
+    "name": "martin3r/platform-process",
+    "description": "Process Module for Platform",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Platform Team",
+            "email": "team@platform.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Platform\\Process\\": "src/",
+            "Platform\\Process\\Database\\": "database/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Platform\\Process\\ProcessServiceProvider"
+            ]
+        }
+    },
+    "require": {
+        "martin3r/platform-organization": "*",
+        "barryvdh/laravel-dompdf": "^2.0||^3.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

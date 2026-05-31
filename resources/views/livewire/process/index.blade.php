@@ -5,7 +5,7 @@
 
     <x-slot name="actionbar">
         <x-ui-page-actionbar :breadcrumbs="array_filter([
-            ['label' => 'Prozesse', 'href' => $statusFromRoute ? route('process.processes.index') : null],
+            ['label' => 'Prozesse', 'href' => $statusFromRoute ? route('process.processes.list') : null],
             $statusFromRoute ? ['label' => match($statusFilter) {
                 'draft' => 'Entwurf',
                 'under_review' => 'In Prüfung',

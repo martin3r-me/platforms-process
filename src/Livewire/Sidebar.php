@@ -5,6 +5,7 @@ namespace Platform\Process\Livewire;
 use Livewire\Component;
 use Platform\Organization\Models\OrganizationEntity;
 use Platform\Organization\Services\EntityDimensionBridge;
+use Platform\Process\Enums\ProcessStatus;
 use Platform\Process\Models\Process;
 use Platform\Process\Models\ProcessChain;
 
@@ -17,9 +18,8 @@ class Sidebar extends Component
 
         if (!$user || !$teamId) {
             return view('process::livewire.sidebar', [
-                'entityTypeGroups' => collect(),
-                'unlinkedProcesses' => collect(),
-                'unlinkedChains' => collect(),
+                'statusGroups' => collect(),
+                'chains' => collect(),
             ]);
         }
 
@@ -34,36 +34,20 @@ class Sidebar extends Component
             ->orderBy('name')
             ->get();
 
-        // 2. Get entity links for both types
+        // 2. Get entity links for processes
         $processIds = $processes->pluck('id')->toArray();
-        $chainIds = $chains->pluck('id')->toArray();
-
-        $entityItemMap = []; // entity_id => ['processes' => [...], 'chains' => [...]]
+        $entityItemMap = []; // entity_id => [process_ids]
         $linkedProcessIds = [];
-        $linkedChainIds = [];
 
         try {
-            // Processes linked to entities
             if (!empty($processIds)) {
                 $processLinks = EntityDimensionBridge::linksForLinkables(
                     ['organization_process', Process::class],
                     $processIds
                 );
                 foreach ($processLinks as $link) {
-                    $entityItemMap[$link->entity_id]['processes'][] = $link->linkable_id;
+                    $entityItemMap[$link->entity_id][] = $link->linkable_id;
                     $linkedProcessIds[] = $link->linkable_id;
-                }
-            }
-
-            // Chains linked to entities
-            if (!empty($chainIds)) {
-                $chainLinks = EntityDimensionBridge::linksForLinkables(
-                    ['organization_process_chain', ProcessChain::class],
-                    $chainIds
-                );
-                foreach ($chainLinks as $link) {
-                    $entityItemMap[$link->entity_id]['chains'][] = $link->linkable_id;
-                    $linkedChainIds[] = $link->linkable_id;
                 }
             }
         } catch (\Throwable $e) {
@@ -71,7 +55,6 @@ class Sidebar extends Component
         }
 
         $linkedProcessIds = array_unique($linkedProcessIds);
-        $linkedChainIds = array_unique($linkedChainIds);
 
         // 3. Ancestor traversal for tree display
         $directEntityIds = array_keys($entityItemMap);
@@ -92,19 +75,17 @@ class Sidebar extends Component
             }
         }
 
-        // 4. Build entity type groups (tree structure)
-        $entityTypeGroups = collect();
+        // 4. Load all relevant entities
         $entityIds = array_keys($entityItemMap);
+        $entities = collect();
+        $entityChildrenMap = [];
+        $rootEntityIds = [];
 
         if (!empty($entityIds)) {
             $entities = OrganizationEntity::with('type')
                 ->whereIn('id', $entityIds)
                 ->get()
                 ->keyBy('id');
-
-            // Parent-child relationships
-            $entityChildrenMap = [];
-            $rootEntityIds = [];
 
             foreach ($entities as $entity) {
                 $parentId = $entity->parent_entity_id;
@@ -114,11 +95,63 @@ class Sidebar extends Component
                     $rootEntityIds[] = $entity->id;
                 }
             }
+        }
 
-            // Recursive tree builder
-            $buildTree = function (int $entityId) use (&$buildTree, $entities, $entityChildrenMap, $entityItemMap, $processes, $chains): ?array {
+        // 5. Group processes by status, then build entity tree per status
+        $statusOrder = [
+            ProcessStatus::ACTIVE,
+            ProcessStatus::PILOT,
+            ProcessStatus::UNDER_REVIEW,
+            ProcessStatus::DRAFT,
+            ProcessStatus::DEPRECATED,
+        ];
+
+        $processesByStatus = $processes->groupBy(fn ($p) => $p->status->value);
+
+        $statusGroups = collect();
+
+        foreach ($statusOrder as $status) {
+            $statusProcesses = $processesByStatus->get($status->value, collect());
+            if ($statusProcesses->isEmpty()) {
+                continue;
+            }
+
+            $statusProcessIds = $statusProcesses->pluck('id')->toArray();
+
+            // Build entity tree for only this status's processes
+            $statusEntityItemMap = [];
+            foreach ($entityItemMap as $entityId => $pIds) {
+                $filtered = array_intersect($pIds, $statusProcessIds);
+                if (!empty($filtered)) {
+                    $statusEntityItemMap[$entityId] = $filtered;
+                }
+            }
+
+            // Mark ancestors needed for this status
+            $statusEntityIds = array_keys($statusEntityItemMap);
+            if (!empty($statusEntityIds) && $entities->isNotEmpty()) {
+                foreach ($statusEntityIds as $entityId) {
+                    $entity = $entities->get($entityId);
+                    if (!$entity) continue;
+                    $ancestor = $entity->parent_entity_id ? $entities->get($entity->parent_entity_id) : null;
+                    while ($ancestor) {
+                        if (!isset($statusEntityItemMap[$ancestor->id])) {
+                            $statusEntityItemMap[$ancestor->id] = [];
+                        }
+                        $ancestor = $ancestor->parent_entity_id ? $entities->get($ancestor->parent_entity_id) : null;
+                    }
+                }
+            }
+
+            // Build tree for this status
+            $buildTree = function (int $entityId) use (&$buildTree, $entities, $entityChildrenMap, $statusEntityItemMap, $statusProcesses): ?array {
                 $entity = $entities->get($entityId);
                 if (!$entity) {
+                    return null;
+                }
+
+                // Only include if this entity is relevant for this status
+                if (!isset($statusEntityItemMap[$entityId])) {
                     return null;
                 }
 
@@ -127,7 +160,6 @@ class Sidebar extends Component
                     ->map(fn ($childId) => $buildTree($childId))
                     ->filter();
 
-                // Children grouped by type
                 $childrenByType = $childNodes
                     ->groupBy(fn ($child) => $child['type_id'])
                     ->map(function ($group) use ($entities) {
@@ -146,20 +178,13 @@ class Sidebar extends Component
                     ->sortBy('sort_order')
                     ->values();
 
-                $itemData = $entityItemMap[$entityId] ?? [];
-
-                $entityProcesses = collect($itemData['processes'] ?? [])
-                    ->map(fn ($id) => $processes->firstWhere('id', $id))
+                $itemData = $statusEntityItemMap[$entityId] ?? [];
+                $entityProcesses = collect($itemData)
+                    ->map(fn ($id) => $statusProcesses->firstWhere('id', $id))
                     ->filter()
                     ->values();
 
-                $entityChains = collect($itemData['chains'] ?? [])
-                    ->map(fn ($id) => $chains->firstWhere('id', $id))
-                    ->filter()
-                    ->values();
-
-                // Total items count (own + children)
-                $totalItems = $entityProcesses->count() + $entityChains->count();
+                $totalItems = $entityProcesses->count();
                 foreach ($childNodes as $child) {
                     $totalItems += $child['total_items'];
                 }
@@ -173,13 +198,13 @@ class Sidebar extends Component
                     'entity_name' => $entity->name,
                     'type_id' => $entity->type?->id,
                     'processes' => $entityProcesses,
-                    'chains' => $entityChains,
+                    'chains' => collect(),
                     'children_by_type' => $childrenByType,
                     'total_items' => $totalItems,
                 ];
             };
 
-            // Root entities grouped by type
+            // Root entities grouped by type for this status
             $groupedByType = [];
             foreach ($rootEntityIds as $entityId) {
                 $entity = $entities->get($entityId);
@@ -214,16 +239,25 @@ class Sidebar extends Component
                     return $group;
                 })
                 ->values();
+
+            // Unlinked processes for this status
+            $unlinkedForStatus = $statusProcesses
+                ->filter(fn ($p) => !in_array($p->id, $linkedProcessIds))
+                ->values();
+
+            $statusGroups->push([
+                'status' => $status,
+                'label' => $status->label(),
+                'color' => $status->color(),
+                'count' => $statusProcesses->count(),
+                'linked' => $entityTypeGroups,
+                'unlinked' => $unlinkedForStatus,
+            ]);
         }
 
-        // 5. Unlinked processes and chains
-        $unlinkedProcesses = $processes->filter(fn ($p) => !in_array($p->id, $linkedProcessIds))->values();
-        $unlinkedChains = $chains->filter(fn ($c) => !in_array($c->id, $linkedChainIds))->values();
-
         return view('process::livewire.sidebar', [
-            'entityTypeGroups' => $entityTypeGroups,
-            'unlinkedProcesses' => $unlinkedProcesses,
-            'unlinkedChains' => $unlinkedChains,
+            'statusGroups' => $statusGroups,
+            'chains' => $chains,
         ]);
     }
 }

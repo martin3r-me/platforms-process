@@ -53,11 +53,11 @@
             />
             <x-ui-dashboard-tile
                 title="Automatisierung"
-                :count="$this->automationScore . '%'"
+                :count="$this->automationScore"
                 icon="cpu-chip"
                 variant="info"
                 size="lg"
-                description="Ø LLM-Score"
+                description="Ø LLM-Score %"
             />
         </div>
 

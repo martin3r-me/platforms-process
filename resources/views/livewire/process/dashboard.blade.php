@@ -23,14 +23,14 @@
     <x-ui-page-container>
         {{-- KPI Stat Tiles --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <x-nx-stat label="Gesamt" :value="$this->totalProcesses" icon="arrow-path" :href="route('process.processes.list')" />
+            <x-nx-stat label="Gesamt" :value="$this->totalProcesses" icon="heroicon-o-arrow-path" :href="route('process.processes.list')" />
             @php
                 $activeCount = collect($this->statusCounts)->firstWhere('status', \Platform\Process\Enums\ProcessStatus::ACTIVE)['count'] ?? 0;
                 $draftCount = collect($this->statusCounts)->firstWhere('status', \Platform\Process\Enums\ProcessStatus::DRAFT)['count'] ?? 0;
             @endphp
-            <x-nx-stat label="Aktiv" :value="$activeCount" icon="check-circle" :href="route('process.processes.index.status', 'active')" />
-            <x-nx-stat label="Entwurf" :value="$draftCount" icon="pencil-square" :href="route('process.processes.index.status', 'draft')" />
-            <x-nx-stat label="Automatisierung" :value="$this->automationScore" icon="cpu-chip" hint="Ø LLM-Score %" />
+            <x-nx-stat label="Aktiv" :value="$activeCount" icon="heroicon-o-check-circle" :href="route('process.processes.index.status', 'active')" />
+            <x-nx-stat label="Entwurf" :value="$draftCount" icon="heroicon-o-pencil-square" :href="route('process.processes.index.status', 'draft')" />
+            <x-nx-stat label="Automatisierung" :value="$this->automationScore" icon="heroicon-o-cpu-chip" hint="Ø LLM-Score %" />
         </div>
 
         {{-- Charts Row --}}

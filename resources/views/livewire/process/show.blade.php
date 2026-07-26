@@ -2662,6 +2662,7 @@
                     ]"
                     wire:model.live="improvementForm.projected_complexity"
                 />
+            </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <x-ui-input-select

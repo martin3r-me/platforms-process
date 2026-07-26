@@ -66,7 +66,7 @@
         </x-ui-page-sidebar>
     </x-slot>
 
-    <x-ui-page-container>
+    <x-ui-page-container width="contained">
         @php $tree = $this->processTree; @endphp
 
         @if(count($tree) === 0 && $this->processes->isEmpty())

@@ -345,7 +345,7 @@
         </x-ui-page-sidebar>
     </x-slot>
 
-    <x-ui-page-container>
+    <x-ui-page-container width="contained">
         {{-- ── Tab: Details (Dashboard) ────────────────────────────────── --}}
         @if($activeTab === 'details')
             @php

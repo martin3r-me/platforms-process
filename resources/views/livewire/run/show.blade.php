@@ -155,7 +155,7 @@
         </x-ui-page-sidebar>
     </x-slot>
 
-    <x-ui-page-container>
+    <x-ui-page-container width="contained">
         @php
             $prog = $this->progress;
             $leadTime = $this->totalActive + $this->totalWait;

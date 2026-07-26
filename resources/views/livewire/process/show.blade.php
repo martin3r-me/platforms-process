@@ -691,7 +691,7 @@
                      })"
                      class="relative overflow-hidden"
                      :class="isFullscreen ? 'workshop-fullscreen' : 'h-[calc(100vh-220px)]'"
-                     style="background: #eef0f4; border-radius: 8px;"
+                     style="background: var(--nx-bg); border-radius: 8px;"
                 >
                     {{-- Zoom Controls --}}
                     <div class="workshop-zoom-controls">
@@ -782,8 +782,8 @@
                             grid-template-columns: repeat({{ $wGridCols }}, 1fr);
                             grid-template-rows: repeat({{ $wGridRows }}, minmax(180px, auto));
                             gap: 1.5px;
-                            background: #2d2d2d;
-                            border: 1.5px solid #2d2d2d;
+                            background: var(--nx-line-strong);
+                            border: 1.5px solid var(--nx-line-strong);
                             border-radius: 4px;
                             overflow: hidden;
                         ">

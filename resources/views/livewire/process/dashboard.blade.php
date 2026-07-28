@@ -21,6 +21,11 @@
     </x-slot>
 
     <x-ui-page-container width="contained">
+        {{-- Begrüßung --}}
+        <x-nx-card class="mb-8">
+            <h2 class="text-lg font-semibold text-[var(--nx-text)]">Hallo Welt</h2>
+        </x-nx-card>
+
         {{-- KPI Stat Tiles --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <x-nx-stat label="Gesamt" :value="$this->totalProcesses" icon="heroicon-o-arrow-path" :href="route('process.processes.list')" />
